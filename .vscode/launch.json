@@ -1,0 +1,78 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch with Arguments Prompt",
+            "request": "launch",
+            "mainClass": "dk.sdu.imada.console.Start",
+            "args": "${command:SpecifyProgramArgs}"
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Start",
+            "request": "launch",
+            "mainClass": "dk.sdu.imada.console.Start",
+            "projectName": "dimmer",
+            "vmArgs": "Path/To/File.config"
+        },
+        {
+            "type": "java",
+            "name": "Util",
+            "request": "launch",
+            "mainClass": "dk.sdu.imada.console.Util",
+            "projectName": "dimmer"
+        },
+        {
+            "type": "java",
+            "name": "StartGUI",
+            "request": "launch",
+            "mainClass": "dk.sdu.imada.gui.controllers.StartGUI",
+            "projectName": "dimmer"
+        },
+        {
+            "type": "java",
+            "name": "ReadIDAT",
+            "request": "launch",
+            "mainClass": "dk.sdu.imada.jlumina.core.io.ReadIDAT",
+            "projectName": "dimmer"
+        },
+        {
+            "type": "java",
+            "name": "OneWayAnovaTest",
+            "request": "launch",
+            "mainClass": "dk.sdu.imada.jlumina.core.statistics.OneWayAnovaTest",
+            "projectName": "dimmer"
+        },
+        {
+            "type": "java",
+            "name": "tests",
+            "request": "launch",
+            "mainClass": "dk.sdu.imada.jlumina.search.algorithms.tests",
+            "projectName": "dimmer"
+        },
+        {
+            "type": "java",
+            "name": "HomoscedasticTest",
+            "request": "launch",
+            "mainClass": "dk.sdu.imada.jlumina.search.statistics.HomoscedasticTest",
+            "projectName": "dimmer"
+        },
+        {
+            "type": "java",
+            "name": "StatisticsUtil",
+            "request": "launch",
+            "mainClass": "dk.sdu.imada.jlumina.search.statistics.StatisticsUtil",
+            "projectName": "dimmer"
+        }
+    ]
+}

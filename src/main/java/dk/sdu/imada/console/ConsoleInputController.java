@@ -16,6 +16,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.google.common.io.ByteStreams;
 
 import au.com.bytecode.opencsv.CSVReader;
+import dk.sdu.imada.jlumina.core.io.ParseMetheorToMatrix;
 import dk.sdu.imada.jlumina.core.io.Read450KSheet;
 import dk.sdu.imada.jlumina.core.io.ReadBetaMatrix;
 import dk.sdu.imada.jlumina.core.io.ReadControlProbe;
@@ -462,6 +463,16 @@ public class ConsoleInputController {
 			}
 		}
 		
+		else if (config.useMetheorInput()){
+			// TODO: maybe first column hast to be names "sample", maybe "bam" can be fine
+			//mandatory_columns.add(Variables.BAM);
+			mandatory_columns.add(Variables.BISULFITE_SAMPLE);
+			missingMandatoryColumns = checkMandatoryColumns(this.columnMap.keySet(), mandatory_columns);
+			if(missingMandatoryColumns){
+				errors.add("Missing mandatory columns in the annotation file: "+Util.setToString(mandatory_columns));
+			}
+		}
+		
 		
 		if(this.errors.size()!=0){
 			System.out.println(Util.errorLog(errors));
@@ -580,8 +591,14 @@ public class ConsoleInputController {
 		else if(config.useBisulfiteInput()){
 			startBisulfitePreprocessing();
 		}
-		else{
+		else if (config.useIdatInput()) {
 			startIdatPreprocessing();
+		}
+		else{
+			System.out.println("KORBI: starting metheor prep!");	//TODO: delete
+			startMetheorPreprocessing();
+			System.out.println("KORBI: starting beta prep!");	//TODO: delete
+			startBetaPreprocessing();
 		}
 	}
 	
@@ -687,6 +704,12 @@ public class ConsoleInputController {
 		Thread loaderThread = new Thread(dataExecutor);
 		loaderThread.start();
 		inputFilesMonitor.run();
+	}
+
+	private void startMetheorPreprocessing(){
+		ParseMetheorToMatrix metheorParser = new ParseMetheorToMatrix(config.getMetheorPath(), config.getMetheorScore());
+		metheorParser.parse();
+		metheorParser.writeToCsv(config.getBetaPath());
 	}
 
 	private void testDataType() {

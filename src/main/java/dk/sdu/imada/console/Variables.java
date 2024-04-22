@@ -27,16 +27,27 @@ public class Variables {
 	public static final String GENDER_ID = "Gender_ID";
 	
 	public static final String BISULFITE_SAMPLE = "sample";
+	public static final String BAM = "bam";
 	
 	//array types
 	public static final String EPIC = "epic";
 	public static final String INFINIUM = "450k";
 	public static final String CUSTOM = "custom";
 	
+	//Metheor scores
+	public static final String PDR = "pdr";
+	public static final String MHL = "mhl";
+	public static final String FDRP = "fdrrp";
+	public static final String qFDRP = "qfdrp";
+	public static final String PM = "pm";
+	public static final String ME = "me";
+	public static final String LPMD = "lpmd";
+
 	//input types
 	public static final String IDAT = "idat";
 	public static final String BETA = "beta";
 	public static final String BISULFITE = "bisulfite";
+	public static final String METHEOR = "metheor";
 
 	public static final String MODEL_SCRIPT = "/models.R";
 

@@ -46,6 +46,9 @@ public class Config {
 	
 	private String beta_path;
 	private String array_type;
+
+	private String metheor_path;
+	private String metheor_score;
 	
 	private int min_reads;
 	private int n_min_read_exceptions;
@@ -157,6 +160,12 @@ public class Config {
 							check_min_reads();
 							check_min_read_exceptions();
 							check_min_variance();
+							break;
+						case Variables.METHEOR:
+							System.out.println("KORBI: input type is metheor!");	//TODO: delete
+							check_metheor_score();
+							check_metheor_path();
+							set_beta_values();
 							break;
 					}
 				}
@@ -498,7 +507,7 @@ public class Config {
 	
 	private void check_input_type(){
 		String parameter = "input_type";
-		String[] choices = {Variables.IDAT,Variables.BETA,Variables.BISULFITE,"1","2","3"};
+		String[] choices = {Variables.IDAT,Variables.BETA,Variables.BISULFITE,Variables.METHEOR,"1","2","3","4"};
 		String value = check_choices(parameter,choices);
 		this.input_type = value;
 	}
@@ -508,6 +517,14 @@ public class Config {
 		String[] choices = {Variables.INFINIUM,Variables.EPIC,Variables.CUSTOM,"1","2","3"};
 		String value = check_choices(parameter,choices);
 		this.array_type = value;
+	}
+
+	private void check_metheor_score(){
+		String parameter = "metheor_score";
+		String[] choices = {Variables.PDR,Variables.MHL,Variables.FDRP,Variables.qFDRP,Variables.PM,Variables.ME,Variables.LPMD,"1","2","3","4","5","6","7"};
+		String value = check_choices(parameter,choices);
+		this.metheor_score = value;
+		System.out.println("KORBI: metheor score: " + this.metheor_score);	//TODO: delete
 	}
 	
 	private void check_regression(){
@@ -900,8 +917,26 @@ public class Config {
 		this.parameters.remove(parameter);
 		this.dimmer_project_path = value;
 	}
-	
 
+	//parameter is optional -> value doesn't have to exist
+	private void check_metheor_path(){
+		String value = null;
+		String parameter = "metheor_path";
+
+		value = check_path(parameter,true,true,true,false);
+		
+		this.parameters.remove(parameter);
+		this.metheor_path = value;
+		System.out.println("KORBI: metheor path is: " + this.metheor_path);	//TODO: delete
+	}
+
+	private void set_beta_values(){
+		this.beta_path = this.metheor_path + "/" + this.metheor_score + "_matrix.csv";
+		this.array_type = Variables.CUSTOM;
+		System.out.println("KORBI: beta path is: " + this.beta_path);	//TODO: delete
+		System.out.println("KORBI: array type is: " + this.array_type);	//TODO: delete
+	}
+	
 	
 	// ################################# error report #############################
 	
@@ -1187,6 +1222,10 @@ public class Config {
 	public String getArrayType(){
 		return this.array_type;
 	}
+
+	public String getMetheorScore(){
+		return this.metheor_score;
+	}
 	
 	public boolean useBetaInput(){
 		return this.input_type.equals(Variables.BETA);
@@ -1196,6 +1235,9 @@ public class Config {
 	}
 	public boolean useBisulfiteInput(){
 		return this.input_type.equals(Variables.BISULFITE);
+	}
+	public boolean useMetheorInput(){
+		return this.input_type.equals(Variables.METHEOR);
 	}
 	
 	public String getInputType(){
@@ -1230,7 +1272,10 @@ public class Config {
 	public String getBetaPath(){
 		return this.beta_path;
 	}
-	
+
+	public String getMetheorPath(){
+		return this.metheor_path;
+	}
 	
 	public boolean load(){
 		return this.load;

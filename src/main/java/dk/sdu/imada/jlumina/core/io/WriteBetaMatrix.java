@@ -103,6 +103,15 @@ public class WriteBetaMatrix extends DataProgress implements Runnable {
 				header[i] = sentrix_id[i]+"_"+sentrix_pos[i];
 			}
 		}
+
+		else if(this.input_type.equals(Variables.METHEOR)) {
+			String[] samples = columnMap.get(Variables.BAM);
+			header = new String[samples.length];
+			
+			for(int i = 0; i < header.length; i++){
+				header[i] = samples[i];
+			}
+		}
 		
 		//header for bisulfite or custom input
 		

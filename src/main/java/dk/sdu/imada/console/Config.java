@@ -162,7 +162,6 @@ public class Config {
 							check_min_variance();
 							break;
 						case Variables.METHEOR:
-							System.out.println("KORBI: input type is metheor!");	//TODO: delete
 							check_metheor_score();
 							check_metheor_path();
 							set_beta_values();
@@ -524,7 +523,6 @@ public class Config {
 		String[] choices = {Variables.PDR,Variables.MHL,Variables.FDRP,Variables.qFDRP,Variables.PM,Variables.ME,Variables.LPMD,"1","2","3","4","5","6","7"};
 		String value = check_choices(parameter,choices);
 		this.metheor_score = value;
-		System.out.println("KORBI: metheor score: " + this.metheor_score);	//TODO: delete
 	}
 	
 	private void check_regression(){
@@ -927,14 +925,23 @@ public class Config {
 		
 		this.parameters.remove(parameter);
 		this.metheor_path = value;
-		System.out.println("KORBI: metheor path is: " + this.metheor_path);	//TODO: delete
 	}
 
 	private void set_beta_values(){
+		/**
+	 	* sets "beta_path" and "array_type" parameters without checking the input.
+	 	* @param parameter: the parameter to be set.
+		* @param value: the value to be set.
+	 	*/
+		String parameter = "beta_path";
+		this.parameters.remove(parameter);
 		this.beta_path = this.metheor_path + "/" + this.metheor_score + "_matrix.csv";
+		System.out.println(parameter+ ": " +this.beta_path);
+
+		parameter = "array_type";
+		this.parameters.remove(parameter);
 		this.array_type = Variables.CUSTOM;
-		System.out.println("KORBI: beta path is: " + this.beta_path);	//TODO: delete
-		System.out.println("KORBI: array type is: " + this.array_type);	//TODO: delete
+		System.out.println(parameter+ ": " + this.array_type);
 	}
 	
 	

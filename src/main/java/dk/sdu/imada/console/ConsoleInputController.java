@@ -464,9 +464,7 @@ public class ConsoleInputController {
 		}
 		
 		else if (config.useMetheorInput()){
-			// TODO: maybe first column hast to be names "sample", maybe "bam" can be fine
-			//mandatory_columns.add(Variables.BAM);
-			mandatory_columns.add(Variables.BISULFITE_SAMPLE);
+			mandatory_columns.add(Variables.BAM);
 			missingMandatoryColumns = checkMandatoryColumns(this.columnMap.keySet(), mandatory_columns);
 			if(missingMandatoryColumns){
 				errors.add("Missing mandatory columns in the annotation file: "+Util.setToString(mandatory_columns));
@@ -595,9 +593,7 @@ public class ConsoleInputController {
 			startIdatPreprocessing();
 		}
 		else{
-			System.out.println("KORBI: starting metheor prep!");	//TODO: delete
 			startMetheorPreprocessing();
-			System.out.println("KORBI: starting beta prep!");	//TODO: delete
 			startBetaPreprocessing();
 		}
 	}
@@ -650,8 +646,13 @@ public class ConsoleInputController {
 			if(config.getArrayType().equals(Variables.INFINIUM) || config.getArrayType().equals(Variables.EPIC)){
 				betaReader.initBetaMatrix(this.columnMap.get(Variables.SENTRIX_ID), this.columnMap.get(Variables.SENTRIX_POS), config.getArrayType());	
 			}
-			else{
-				betaReader.initBetaMatrix(this.columnMap.get(Variables.BISULFITE_SAMPLE), config.getArrayType());
+			else {
+				if(config.getInputType().equals(Variables.METHEOR)){
+					betaReader.initBetaMatrix(this.columnMap.get(Variables.BAM), config.getArrayType());
+				}
+				else {
+					betaReader.initBetaMatrix(this.columnMap.get(Variables.BISULFITE_SAMPLE), config.getArrayType());
+				}
 			}
 		}catch(OutOfMemoryError e){
 			System.out.println(Messages.OUT_OF_MERMORY);

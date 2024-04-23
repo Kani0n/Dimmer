@@ -25,6 +25,9 @@ public class ParseMetheorToMatrix {
     }
 
     public void parse(){
+
+        System.out.println("Parsing Metheor data...");
+
         File directory = new File(this.dir);
         File[] listOfFiles = directory.listFiles();
         if (listOfFiles == null) {

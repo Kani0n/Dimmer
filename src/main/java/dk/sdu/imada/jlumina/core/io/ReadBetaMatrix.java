@@ -119,9 +119,9 @@ public class ReadBetaMatrix extends DataProgress{
 	 */
 	
 	private ReadManifest getCustomManifest(){
-		
+
 		ReadManifest manifest = new ReadManifest();
-		
+
 		// get chromosome map with positions
 		HashMap<String, LinkedList<Integer>> chr_map = new HashMap<>();
 		for(String key : cpgMap.keySet()){

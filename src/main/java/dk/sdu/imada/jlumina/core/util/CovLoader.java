@@ -324,7 +324,7 @@ public class CovLoader extends DataProgress{
 	 */
 	public boolean quickCheck(){
 		HashSet<String> path_set = new HashSet<>();
-		for(int i = 0; i < samples.length; i++){
+		for(int i = 0; i < this.samples.length; i++){
 			File sample_file = new File(samples[i]);
 			if(!sample_file.exists()){
 				sample_file = new File(new File(this.path).getParentFile() + "/" + samples[i]);

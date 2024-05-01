@@ -16,6 +16,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.google.common.io.ByteStreams;
 
 import au.com.bytecode.opencsv.CSVReader;
+import dk.sdu.imada.jlumina.core.io.MetheorParser;
 import dk.sdu.imada.jlumina.core.io.ParseMetheorToMatrix;
 import dk.sdu.imada.jlumina.core.io.Read450KSheet;
 import dk.sdu.imada.jlumina.core.io.ReadBetaMatrix;
@@ -464,10 +465,19 @@ public class ConsoleInputController {
 		}
 		
 		else if (config.useMetheorInput()){
-			mandatory_columns.add(Variables.BAM);
+
+			mandatory_columns.add(Variables.METHEOR_SAMPLE);
 			missingMandatoryColumns = checkMandatoryColumns(this.columnMap.keySet(), mandatory_columns);
-			if(missingMandatoryColumns){
-				errors.add("Missing mandatory columns in the annotation file: "+Util.setToString(mandatory_columns));
+
+			if(!missingMandatoryColumns){
+				
+				MetheorParser metheorParser = new MetheorParser(f.getAbsolutePath());
+				if(!metheorParser.quickCheck()){
+					System.out.println(Util.errorLog(metheorParser.getErrors()));
+				}
+			}
+			else{
+				errors.add("Missing mandatory columns for metheor input: "+Util.setToString(mandatory_columns));
 			}
 		}
 		
@@ -647,8 +657,9 @@ public class ConsoleInputController {
 				betaReader.initBetaMatrix(this.columnMap.get(Variables.SENTRIX_ID), this.columnMap.get(Variables.SENTRIX_POS), config.getArrayType());	
 			}
 			else {
+				//TODO: revert
 				if(config.getInputType().equals(Variables.METHEOR)){
-					betaReader.initBetaMatrix(this.columnMap.get(Variables.BAM), config.getArrayType());
+					betaReader.initBetaMatrix(this.columnMap.get(Variables.METHEOR_SAMPLE), config.getArrayType());
 				}
 				else {
 					betaReader.initBetaMatrix(this.columnMap.get(Variables.BISULFITE_SAMPLE), config.getArrayType());
@@ -708,9 +719,42 @@ public class ConsoleInputController {
 	}
 
 	private void startMetheorPreprocessing(){
-		ParseMetheorToMatrix metheorParser = new ParseMetheorToMatrix(config.getMetheorPath(), config.getMetheorScore());
-		metheorParser.parse();
-		metheorParser.writeToCsv(config.getBetaPath());
+		MetheorParser metheorParser = new MetheorParser(this.config.getAnnotationPath());
+		try{
+			metheorParser.load(this.config.getThreads());
+		} catch (OutOfMemoryError e) {
+			System.out.println(Messages.OUT_OF_MERMORY);
+			System.exit(1);
+		}
+		
+		if (!metheorParser.check()) {
+			System.out.println(metheorParser.errorLog());
+			System.exit(1);
+		} else {
+			mainController.setBeta(metheorParser.getBeta());
+			mainController.setManifest(metheorParser.getManifest());
+			
+			// TODO: maybe even more checks?
+			if(config.getBackgroundCorrection()){
+				System.out.println("Background correction isn't supported for metheor data");
+			}
+			if(config.getProbeFiltering()){
+				System.out.println("Probe filtering isn't supported for metheor data");
+			}
+			if(config.getCellComposition()){
+				config.setCellComposition(false);
+				System.out.println("Cell composition estimation isn't supported for metheor data");
+			}
+			if(metheorParser.hasWarnings()){
+				System.out.println(metheorParser.warningLog());
+			}
+		}
+		/* TODO: delete
+		 * ParseMetheorToMatrix metheorParser = new ParseMetheorToMatrix(config.getMetheorScore());
+		 * metheorParser.parse(this.columnMap.get(Variables.METHEOR_SAMPLE));
+		 * metheorParser.writeToCsv(config.getBetaPath());
+		*/
+		System.exit(0);	
 	}
 
 	private void testDataType() {

@@ -163,8 +163,7 @@ public class Config {
 							break;
 						case Variables.METHEOR:
 							check_metheor_score();
-							check_metheor_path();
-							set_beta_values();
+							set_beta_values();	//TODO: delete
 							break;
 					}
 				}
@@ -927,6 +926,7 @@ public class Config {
 		this.metheor_path = value;
 	}
 
+	//TODO: delete
 	private void set_beta_values(){
 		/**
 	 	* sets "beta_path" and "array_type" parameters without checking the input.
@@ -935,8 +935,8 @@ public class Config {
 	 	*/
 		String parameter = "beta_path";
 		this.parameters.remove(parameter);
-		this.beta_path = this.metheor_path + "/" + this.metheor_score + "_matrix.csv";
-		System.out.println(parameter+ ": " +this.beta_path);
+		this.beta_path = this.output_path + "/" + this.metheor_score + "_matrix.csv";
+		System.out.println(parameter+ ": " + this.beta_path);
 
 		parameter = "array_type";
 		this.parameters.remove(parameter);

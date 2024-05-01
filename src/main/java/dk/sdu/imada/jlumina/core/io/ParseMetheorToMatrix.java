@@ -12,41 +12,27 @@ import dk.sdu.imada.console.Variables;
 
 public class ParseMetheorToMatrix {
     
-    String dir;
     String score;
     ArrayList<String> samples;
     HashMap<String, HashMap<String, Float>> map;
 
-    public ParseMetheorToMatrix(String dir, String score){
-        this.dir = dir;
+    public ParseMetheorToMatrix(String score){
         this.score = score;
         this.samples = new ArrayList<>();
         this.map = new HashMap<>();
     }
 
-    public void parse(){
+    public void parse(String[] files){
 
         System.out.println("Parsing Metheor data...");
+        for (String file : files) {
 
-        File directory = new File(this.dir);
-        File[] listOfFiles = directory.listFiles();
-        if (listOfFiles == null) {
-            System.err.println("Directory is empty!");
-            return;
-        }
-        for (File file: listOfFiles) {
-            if (!file.isFile()) {
-                continue;
-            }
-            String name = file.getName();
-            if (!name.endsWith(".tsv") || name.equals(this.score + "_matrix.tsv")){
-                System.err.println("Skipping non-tsv file: " + name);
-                continue;
-            }
+            String[] path = file.split("/");
+            String name = path[path.length-1];
+            name = name.substring(0, name.length()-4);
+
             try {
-                BufferedReader br = new BufferedReader(new FileReader(this.dir + "/" + name));
-                String sample = name.substring(0, name.length()-4);
-                this.samples.add(sample);
+                BufferedReader br = new BufferedReader(new FileReader(file));
                 String line;
                 while ((line = br.readLine()) != null) {
                     line = line.strip();
@@ -60,10 +46,10 @@ public class ParseMetheorToMatrix {
                         float value = Float.parseFloat(values[3]);
                         String cpg = chr + ":" + start;
                         if (this.map.containsKey(cpg)) {
-                            this.map.get(cpg).put(sample, value);
+                            this.map.get(cpg).put(name, value);
                         } else {
                             HashMap<String, Float> temp = new HashMap<>();
-                            temp.put(sample, value);
+                            temp.put(name, value);
                             this.map.put(cpg, temp);
                         }
                     } else if (this.score.equals(Variables.PM) || this.score.equals(Variables.ME) || this.score.equals(Variables.LPMD)) {
@@ -74,9 +60,10 @@ public class ParseMetheorToMatrix {
                         return;
                     }
                 }
+                this.samples.add(name);
                 br.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("could not read sample at location: " + file);
             }
         }
     }

@@ -105,7 +105,7 @@ public class WriteBetaMatrix extends DataProgress implements Runnable {
 		}
 
 		else if(this.input_type.equals(Variables.METHEOR)) {
-			String[] samples = columnMap.get(Variables.BAM);
+			String[] samples = columnMap.get(Variables.METHEOR_SAMPLE);
 			header = new String[samples.length];
 			
 			for(int i = 0; i < header.length; i++){

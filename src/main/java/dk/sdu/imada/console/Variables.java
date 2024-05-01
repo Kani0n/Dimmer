@@ -27,7 +27,7 @@ public class Variables {
 	public static final String GENDER_ID = "Gender_ID";
 	
 	public static final String BISULFITE_SAMPLE = "sample";
-	public static final String BAM = "bam";
+	public static final String METHEOR_SAMPLE = "sample";
 	
 	//array types
 	public static final String EPIC = "epic";

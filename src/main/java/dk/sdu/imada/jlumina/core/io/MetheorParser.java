@@ -15,6 +15,7 @@ import dk.sdu.imada.console.Util;
 import dk.sdu.imada.console.Variables;
 import dk.sdu.imada.jlumina.core.primitives.CpG;
 import dk.sdu.imada.jlumina.core.util.LoadingQueue;
+import dk.sdu.imada.jlumina.core.util.MetheorTsvLoader;
 import dk.sdu.imada.jlumina.core.util.QueueThread;
 
 public class MetheorParser {
@@ -27,7 +28,7 @@ public class MetheorParser {
 	private ArrayList<String> samples_path;
 	private ArrayList<String> errors;
 	private ArrayList<String> warnings;
-	private ArrayList<ReadMetheorTsv> reader_list;
+	private ArrayList<MetheorTsvLoader> reader_list;
 
 	private ReadManifest manifest;
     private float[][] beta;
@@ -134,7 +135,7 @@ public class MetheorParser {
 				errors.add("No reading access: " + sample);
 				continue;
 			}
-			ReadMetheorTsv readMetheorTsv = new ReadMetheorTsv(absolute_path);
+			MetheorTsvLoader readMetheorTsv = new MetheorTsvLoader(absolute_path);
 			readMetheorTsv.quickCheck();
 			if(!readMetheorTsv.check()){
 				errors.addAll(readMetheorTsv.getErrors());
@@ -149,13 +150,13 @@ public class MetheorParser {
 	 */
 	private void readData()  throws OutOfMemoryError {
 		
-		Queue<ReadMetheorTsv> queue = new ConcurrentLinkedQueue<>(); // need to be read
-		LoadingQueue<ReadMetheorTsv> loaded = new LoadingQueue<>(); // finished reading
+		Queue<MetheorTsvLoader> queue = new ConcurrentLinkedQueue<>(); // need to be read
+		LoadingQueue<MetheorTsvLoader> loaded = new LoadingQueue<>(); // finished reading
 		this.reader_list = new ArrayList<>(); //overall reader list
 		
 		//create reader objects
 		for(String path : samples_path){
-			ReadMetheorTsv reader = new ReadMetheorTsv(path);
+			MetheorTsvLoader reader = new MetheorTsvLoader(path);
 			queue.add(reader);
 			reader_list.add(reader);
 		}
@@ -164,9 +165,9 @@ public class MetheorParser {
 		boolean overflow = false;
 		
 		
-		ArrayList<QueueThread<ReadMetheorTsv>> threads = new ArrayList<>();
+		ArrayList<QueueThread<MetheorTsvLoader>> threads = new ArrayList<>();
 		for(int i = 0; i < numThreads; i++){
-			QueueThread<ReadMetheorTsv> thread = new QueueThread<>(queue, loaded, i, overflow); 
+			QueueThread<MetheorTsvLoader> thread = new QueueThread<>(queue, loaded, i, overflow); 
 			threads.add(thread);
 			thread.start();
 		}
@@ -194,7 +195,7 @@ public class MetheorParser {
 	 * gets errors and warnings from the readers and adds them to own list
 	 */
 	private void addReaderErrorsAndWarnings(){
-		for(ReadMetheorTsv reader : reader_list){
+		for(MetheorTsvLoader reader : reader_list){
 			if(reader.hasWarnings()){
 				this.warnings.addAll(reader.getWarnings());
 			}
@@ -210,7 +211,7 @@ public class MetheorParser {
 		
 		HashSet<String> all_chrs = new HashSet<>();
 		
-		for(ReadMetheorTsv reader: this.reader_list){
+		for(MetheorTsvLoader reader: this.reader_list){
 			
 			HashMap<String,HashMap<Integer,Float>> reader_map = reader.getMap();
 			
@@ -223,7 +224,7 @@ public class MetheorParser {
 			full_map.put(chr, new HashMap<Integer,Short>());
 		}
 		
-		for(ReadMetheorTsv reader : this.reader_list){
+		for(MetheorTsvLoader reader : this.reader_list){
 			
 			HashMap<String,HashMap<Integer,Float>> reader_map = reader.getMap();
 			
@@ -276,7 +277,7 @@ public class MetheorParser {
 			
 			//delete data if chromosome changes
 			if(cpg.getChromosome().equals(current_chr)){ 
-				for(ReadMetheorTsv reader: this.reader_list){
+				for(MetheorTsvLoader reader: this.reader_list){
 					reader.getMap().remove(current_chr);
 				}
 				current_chr = cpg.getChromosome();
@@ -311,7 +312,7 @@ public class MetheorParser {
 		}
 		
 		//delete data maps of the readers
-		for(ReadMetheorTsv reader: this.reader_list){
+		for(MetheorTsvLoader reader: this.reader_list){
 			reader.setMap(null);
 		}
 	}

@@ -1,4 +1,4 @@
-package dk.sdu.imada.jlumina.core.io;
+package dk.sdu.imada.jlumina.core.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ReadMetheorTsv implements Runnable{
+public class MetheorTsvLoader implements Runnable{
 
     private String path;
 	private String sample;
@@ -17,7 +17,7 @@ public class ReadMetheorTsv implements Runnable{
 	private ArrayList<String> errors;
 	private ArrayList<String> warnings;
 
-    public ReadMetheorTsv(String path){
+    public MetheorTsvLoader(String path){
 		this.errors = new ArrayList<>();
 		this.warnings = new ArrayList<>();
 		this.path = path.replace("\\","/");

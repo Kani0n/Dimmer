@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import dk.sdu.imada.console.Util;
 import dk.sdu.imada.console.Variables;
 import dk.sdu.imada.jlumina.core.primitives.CpG;
-import dk.sdu.imada.jlumina.core.statistics.LowVarianceFilter;
 import dk.sdu.imada.jlumina.core.util.LoadingQueue;
 import dk.sdu.imada.jlumina.core.util.QueueThread;
 
@@ -266,7 +265,7 @@ public class MetheorParser {
 	 * loads beta matrix
 	 */
 	 public void initBeta() throws OutOfMemoryError{
-		//create matrices for methylated and unmethylated counts, stored data in the ReadCov objects is deleted after every chromosome
+		//creates matrix for scores, stored data in the ReadMetheorTsv objects is deleted after every chromosome
 		CpG[] cpg_list = this.manifest.getCpgList();
 		this.beta = new float[cpg_list.length][];
 		String current_chr = null; //keeps track of current chromosome for data deletion

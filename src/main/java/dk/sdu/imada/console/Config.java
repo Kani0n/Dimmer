@@ -47,7 +47,6 @@ public class Config {
 	private String beta_path;
 	private String array_type;
 
-	private String metheor_path;
 	private String metheor_score;
 	
 	private int min_reads;
@@ -163,7 +162,6 @@ public class Config {
 							break;
 						case Variables.METHEOR:
 							check_metheor_score();
-							set_beta_values();	//TODO: delete
 							break;
 					}
 				}
@@ -914,35 +912,6 @@ public class Config {
 		this.parameters.remove(parameter);
 		this.dimmer_project_path = value;
 	}
-
-	//parameter is optional -> value doesn't have to exist
-	private void check_metheor_path(){
-		String value = null;
-		String parameter = "metheor_path";
-
-		value = check_path(parameter,true,true,true,false);
-		
-		this.parameters.remove(parameter);
-		this.metheor_path = value;
-	}
-
-	//TODO: delete
-	private void set_beta_values(){
-		/**
-	 	* sets "beta_path" and "array_type" parameters without checking the input.
-	 	* @param parameter: the parameter to be set.
-		* @param value: the value to be set.
-	 	*/
-		String parameter = "beta_path";
-		this.parameters.remove(parameter);
-		this.beta_path = this.output_path + "/" + this.metheor_score + "_matrix.csv";
-		System.out.println(parameter+ ": " + this.beta_path);
-
-		parameter = "array_type";
-		this.parameters.remove(parameter);
-		this.array_type = Variables.CUSTOM;
-		System.out.println(parameter+ ": " + this.array_type);
-	}
 	
 	
 	// ################################# error report #############################
@@ -1278,10 +1247,6 @@ public class Config {
 	
 	public String getBetaPath(){
 		return this.beta_path;
-	}
-
-	public String getMetheorPath(){
-		return this.metheor_path;
 	}
 	
 	public boolean load(){

@@ -17,7 +17,6 @@ import com.google.common.io.ByteStreams;
 
 import au.com.bytecode.opencsv.CSVReader;
 import dk.sdu.imada.jlumina.core.io.MetheorParser;
-import dk.sdu.imada.jlumina.core.io.ParseMetheorToMatrix;
 import dk.sdu.imada.jlumina.core.io.Read450KSheet;
 import dk.sdu.imada.jlumina.core.io.ReadBetaMatrix;
 import dk.sdu.imada.jlumina.core.io.ReadControlProbe;
@@ -477,7 +476,7 @@ public class ConsoleInputController {
 				}
 			}
 			else{
-				errors.add("Missing mandatory columns for metheor input: "+Util.setToString(mandatory_columns));
+				errors.add("Missing mandatory columns for metheor input: "+ Util.setToString(mandatory_columns));
 			}
 		}
 		
@@ -604,7 +603,6 @@ public class ConsoleInputController {
 		}
 		else{
 			startMetheorPreprocessing();
-			startBetaPreprocessing();
 		}
 	}
 	
@@ -657,13 +655,7 @@ public class ConsoleInputController {
 				betaReader.initBetaMatrix(this.columnMap.get(Variables.SENTRIX_ID), this.columnMap.get(Variables.SENTRIX_POS), config.getArrayType());	
 			}
 			else {
-				//TODO: revert
-				if(config.getInputType().equals(Variables.METHEOR)){
-					betaReader.initBetaMatrix(this.columnMap.get(Variables.METHEOR_SAMPLE), config.getArrayType());
-				}
-				else {
-					betaReader.initBetaMatrix(this.columnMap.get(Variables.BISULFITE_SAMPLE), config.getArrayType());
-				}
+				betaReader.initBetaMatrix(this.columnMap.get(Variables.BISULFITE_SAMPLE), config.getArrayType());
 			}
 		}catch(OutOfMemoryError e){
 			System.out.println(Messages.OUT_OF_MERMORY);
@@ -734,7 +726,6 @@ public class ConsoleInputController {
 			mainController.setBeta(metheorParser.getBeta());
 			mainController.setManifest(metheorParser.getManifest());
 			
-			// TODO: maybe even more checks?
 			if(config.getBackgroundCorrection()){
 				System.out.println("Background correction isn't supported for metheor data");
 			}
@@ -749,12 +740,7 @@ public class ConsoleInputController {
 				System.out.println(metheorParser.warningLog());
 			}
 		}
-		/* TODO: delete
-		 * ParseMetheorToMatrix metheorParser = new ParseMetheorToMatrix(config.getMetheorScore());
-		 * metheorParser.parse(this.columnMap.get(Variables.METHEOR_SAMPLE));
-		 * metheorParser.writeToCsv(config.getBetaPath());
-		*/
-		System.exit(0);	
+
 	}
 
 	private void testDataType() {

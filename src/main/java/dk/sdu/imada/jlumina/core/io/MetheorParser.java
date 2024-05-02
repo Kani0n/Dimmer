@@ -155,7 +155,7 @@ public class MetheorParser {
 		this.reader_list = new ArrayList<>(); //overall reader list
 		
 		//create reader objects
-		for(String path : samples_path){
+		for(String path : this.samples_path){
 			MetheorTsvLoader reader = new MetheorTsvLoader(path);
 			queue.add(reader);
 			reader_list.add(reader);

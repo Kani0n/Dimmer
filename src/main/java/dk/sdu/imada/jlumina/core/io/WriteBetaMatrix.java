@@ -111,7 +111,8 @@ public class WriteBetaMatrix extends DataProgress implements Runnable {
 			header = new String[samples.length];
 			
 			for(int i = 0; i < header.length; i++){
-				header[i] = samples[i];
+				String sample_name = samples[i].split("/")[samples[i].split("/").length-1];
+				header[i] = sample_name.substring(0, sample_name.length()-4);
 			}
 		}
 		

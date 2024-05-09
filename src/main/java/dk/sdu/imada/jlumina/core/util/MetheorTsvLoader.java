@@ -45,6 +45,10 @@ public class MetheorTsvLoader implements Runnable{
 			String[] splitted = line.split("\t");
 			String chr = splitted[0];
 			if (this.score.equals(Variables.PDR) || this.score.equals(Variables.MHL) || this.score.equals(Variables.FDRP) || this.score.equals(Variables.qFDRP)) {
+				int start = Integer.parseInt(splitted[1]);
+				float value = Float.parseFloat(splitted[3]);
+				String cpg = chr + ":" + start;
+			} else if (this.score.equals(Variables.PM)|| this.score.equals(Variables.ME)) {
 				int start_1 = Integer.parseInt(splitted[1]);
 				int start_2 = Integer.parseInt(splitted[2]);
 				int start_3 = Integer.parseInt(splitted[3]);
@@ -54,10 +58,6 @@ public class MetheorTsvLoader implements Runnable{
 				String cpg_2 = chr + ":" + start_2;
 				String cpg_3 = chr + ":" + start_3;
 				String cpg_4 = chr + ":" + start_4;
-			} else if (this.score.equals(Variables.PM)|| this.score.equals(Variables.ME)) {
-				int start = Integer.parseInt(splitted[1]);
-				float value = Float.parseFloat(splitted[3]);
-				String cpg = chr + ":" + start;
 			} else {
 				errors.add("Unknown metheor score: " + score);
 			}

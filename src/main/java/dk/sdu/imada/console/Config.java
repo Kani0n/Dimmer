@@ -48,6 +48,7 @@ public class Config {
 	private String array_type;
 
 	private String metheor_score;
+	private String reduction_type;
 	
 	private int min_reads;
 	private int n_min_read_exceptions;
@@ -520,6 +521,16 @@ public class Config {
 		String[] choices = {Variables.PDR,Variables.MHL,Variables.FDRP,Variables.qFDRP,Variables.PM,Variables.ME,Variables.LPMD,"1","2","3","4","5","6","7"};
 		String value = check_choices(parameter,choices);
 		this.metheor_score = value;
+		if (this.metheor_score.equals(Variables.PM) || this.metheor_score.equals(Variables.ME)) {
+			check_reduction_type();
+		}
+	}
+
+	private void check_reduction_type(){
+		String parameter = "reduction_type";
+		String[] choices = {Variables.MEAN,Variables.MEDIAN,Variables.MAX,"1","2","3"};
+		String value = check_choices(parameter,choices);
+		this.reduction_type = value;
 	}
 	
 	private void check_regression(){
@@ -1201,6 +1212,10 @@ public class Config {
 
 	public String getMetheorScore(){
 		return this.metheor_score;
+	}
+
+	public String getReductionType(){
+		return this.reduction_type;
 	}
 	
 	public boolean useBetaInput(){

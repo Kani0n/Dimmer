@@ -43,6 +43,11 @@ public class Variables {
 	public static final String ME = "me";
 	public static final String LPMD = "lpmd";
 
+	// beta value reduction type
+	public static final String MEAN = "mean";
+	public static final String MEDIAN = "median";
+	public static final String MAX = "max";
+
 	//input types
 	public static final String IDAT = "idat";
 	public static final String BETA = "beta";

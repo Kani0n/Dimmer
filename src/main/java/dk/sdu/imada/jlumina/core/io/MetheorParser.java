@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +24,9 @@ public class MetheorParser {
     private String path;
 	private int numThreads = 1;
 
+	private String score;
+	private String reduction_type;
+
 	private String[] samples;
 	
 	private ArrayList<String> samples_path;
@@ -37,8 +41,10 @@ public class MetheorParser {
 	 * A class to load .tsv files produced by metheor
 	 * @param path leading to a sample annotation file
 	 */
-	public MetheorParser(String path){
+	public MetheorParser(String path, String score, String reduction_type){
 		this.path = path;
+		this.score = score;
+		this.reduction_type = reduction_type;
 		this.errors = new ArrayList<>();
 		this.warnings = new ArrayList<>();
 		this.samples_path = new ArrayList<>();
@@ -135,7 +141,7 @@ public class MetheorParser {
 				errors.add("No reading access: " + sample);
 				continue;
 			}
-			MetheorTsvLoader readMetheorTsv = new MetheorTsvLoader(absolute_path);
+			MetheorTsvLoader readMetheorTsv = new MetheorTsvLoader(absolute_path, this.score);
 			readMetheorTsv.quickCheck();
 			if(!readMetheorTsv.check()){
 				errors.addAll(readMetheorTsv.getErrors());
@@ -156,7 +162,7 @@ public class MetheorParser {
 		
 		//create reader objects
 		for(String path : this.samples_path){
-			MetheorTsvLoader reader = new MetheorTsvLoader(path);
+			MetheorTsvLoader reader = new MetheorTsvLoader(path, this.score);
 			queue.add(reader);
 			reader_list.add(reader);
 		}
@@ -213,11 +219,11 @@ public class MetheorParser {
 		
 		for(MetheorTsvLoader reader: this.reader_list){
 			
-			HashMap<String,HashMap<Integer,Float>> reader_map = reader.getMap();
+			HashMap<String,HashMap<Integer, ArrayList<Float>>> reader_map = reader.getMap();
 			
 			all_chrs.addAll(reader_map.keySet());
 		}
-			
+		
 		//get all positions
 		HashMap<String,HashMap<Integer,Short>> full_map = new HashMap<>();
 		for(String chr : all_chrs){
@@ -226,11 +232,11 @@ public class MetheorParser {
 		
 		for(MetheorTsvLoader reader : this.reader_list){
 			
-			HashMap<String,HashMap<Integer,Float>> reader_map = reader.getMap();
+			HashMap<String,HashMap<Integer, ArrayList<Float>>> reader_map = reader.getMap();
 			
 			for(String chr : all_chrs){
 				HashMap<Integer,Short> count_map = full_map.get(chr);
-				HashMap<Integer,Float> pos_map = reader_map.get(chr);
+				HashMap<Integer,ArrayList<Float>> pos_map = reader_map.get(chr);
 				
 				if(pos_map!=null){
 					for(int pos : reader_map.get(chr).keySet()){
@@ -289,17 +295,51 @@ public class MetheorParser {
 			//iterate through readers to fill rows
 			for(int j = 0; j < this.reader_list.size(); j++){
 				
-				HashMap<Integer,Float> pos_map = this.reader_list.get(j).getMap().get(cpg.getChromosome());
+				HashMap<Integer, ArrayList<Float>> pos_map = this.reader_list.get(j).getMap().get(cpg.getChromosome());
 				
 				if(pos_map!=null){
 					
-					Float beta_value = pos_map.getOrDefault(cpg.getMapInfo(),(float)-1);
-					if(beta_value>=0){
-						beta_row[j] = beta_value;
-					}
-					else{
+					ArrayList<Float> beta_values = pos_map.getOrDefault(cpg.getMapInfo(), new ArrayList<Float>());
+
+					// no value for CpG
+					if (beta_values.isEmpty()){
+
 						beta_row[j] = Float.NaN;
-					}	
+
+					// only one value per CpG
+					} else if (beta_values.size() == 1) {
+
+						beta_row[j] = beta_values.get(0);
+
+					// multiple values per CpG
+					} else {
+						
+						switch (this.reduction_type) {
+							case Variables.MEAN:
+
+								float sum = 0;
+								for (float beta_value: beta_values) {
+									sum += beta_value;
+								}
+								beta_row[j] = sum / beta_values.size();
+								break;
+							
+							case Variables.MEDIAN:
+
+								beta_row[j] = (beta_values.get(beta_values.size()/2) + beta_values.get(beta_values.size()/2 - 1))/2;
+								break;
+
+							case Variables.MAX:
+
+								beta_row[j] = Collections.max(beta_values);
+								break;
+
+							default:
+								this.errors.add("No valid reduction type provided!");
+								break;								
+						}
+
+					}
 					
 				}
 				else{

@@ -470,7 +470,7 @@ public class ConsoleInputController {
 
 			if(!missingMandatoryColumns){
 				
-				MetheorParser metheorParser = new MetheorParser(f.getAbsolutePath());
+				MetheorParser metheorParser = new MetheorParser(f.getAbsolutePath(), this.config.getMetheorScore(), this.config.getReductionType());
 				if(!metheorParser.quickCheck()){
 					System.out.println(Util.errorLog(metheorParser.getErrors()));
 				}
@@ -711,7 +711,7 @@ public class ConsoleInputController {
 	}
 
 	private void startMetheorPreprocessing(){
-		MetheorParser metheorParser = new MetheorParser(this.config.getAnnotationPath());
+		MetheorParser metheorParser = new MetheorParser(this.config.getAnnotationPath(), this.config.getMetheorScore(), this.config.getReductionType());
 		try{
 			metheorParser.load(this.config.getThreads());
 		} catch (OutOfMemoryError e) {
